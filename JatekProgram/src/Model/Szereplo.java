@@ -10,11 +10,13 @@ public abstract class Szereplo implements Serializable {
     private List<Targy> targyLista;
     private int sebesseg;
     protected int alapSebesseg = 30;
+    private String nev;
     
     public Szereplo()
     {
         targyLista = new ArrayList<Targy>();
         sebesseg = alapSebesseg;
+        nev = "";
     }
     
     public List<Targy> getTargyLista()
@@ -30,6 +32,16 @@ public abstract class Szereplo implements Serializable {
     public int getSebesseg()
     {
         return sebesseg;
+    }
+    
+    public String getNev()
+    {
+        return nev;
+    }
+    
+    public void setNev(String nev)
+    {
+        this.nev = nev;
     }
     
     protected void setSebesseg(int sebesseg)
