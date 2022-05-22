@@ -9,11 +9,12 @@ public abstract class Szereplo implements Serializable {
     
     private List<Targy> targyLista;
     private int sebesseg;
+    protected int alapSebesseg = 30;
     
     public Szereplo()
     {
         targyLista = new ArrayList<Targy>();
-        sebesseg = 30;
+        sebesseg = alapSebesseg;
     }
     
     public List<Targy> getTargyLista()

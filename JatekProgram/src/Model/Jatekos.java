@@ -9,6 +9,14 @@ public class Jatekos extends Szereplo implements Serializable {
         
     }
     
+    public void sebessegSzamol()
+    {
+        setSebesseg(alapSebesseg);
+        
+        getTargyLista().forEach((n) -> 
+                setSebesseg(getSebesseg() - n.getTomeg()));
+    }
+    
     @Override
     public void TargyFelvesz(Targy targy) throws TulSokTargyException
     {
@@ -22,11 +30,5 @@ public class Jatekos extends Szereplo implements Serializable {
             super.TargyFelvesz(targy);
             sebessegSzamol();
         }
-    }
-    
-    public void sebessegSzamol()
-    {
-        getTargyLista().forEach((n) -> 
-                setSebesseg(getSebesseg() - n.getTomeg()));
     }
 }
