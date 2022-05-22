@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class Szereplo implements Serializable {
+    
     private List<Targy> targyLista;
     private int sebesseg;
     
