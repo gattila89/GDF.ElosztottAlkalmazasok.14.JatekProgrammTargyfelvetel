@@ -204,7 +204,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JList" name="jListJatekosok">
+            <Component class="javax.swing.JList" name="jListSzereplok">
               <Properties>
                 <Property name="selectionMode" type="int" value="0"/>
               </Properties>
@@ -388,6 +388,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="N&#xe9;v szerint"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonRendezNevActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel1">
               <Properties>
@@ -398,6 +401,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="T&#xf6;meg szerint"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonRendezToemgActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -427,15 +433,16 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jButtonAddUjTargyToJatekos" pref="190" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="jTextFieldUjTargyNev" max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jSpinnerUjTargyTomeg" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jTextFieldUjTargyNev" max="32767" attributes="0"/>
+                                  <Component id="jSpinnerUjTargyTomeg" max="32767" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -480,6 +487,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Hozz&#xe1;ad"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonAddUjTargyToJatekosActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -487,11 +497,17 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="J&#xe1;t&#xe9;kos ment&#xe9;se"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonMentesActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonBetoltes">
           <Properties>
             <Property name="text" type="java.lang.String" value="J&#xe1;t&#xe9;kos mentett bet&#xf6;lt&#xe9;se"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonBetoltesActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

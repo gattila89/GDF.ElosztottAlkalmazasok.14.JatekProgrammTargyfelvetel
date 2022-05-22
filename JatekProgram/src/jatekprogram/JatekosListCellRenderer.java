@@ -1,6 +1,6 @@
 package jatekprogram;
 
-import Model.Jatekos;
+import Model.Szereplo;
 import java.awt.Component;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
@@ -13,8 +13,8 @@ public class JatekosListCellRenderer extends DefaultListCellRenderer {
                                  boolean isSelected,
                                  boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        if (value instanceof Jatekos) {
-            Jatekos ingredient = (Jatekos)value;
+        if (value instanceof Szereplo) {
+            Szereplo ingredient = (Szereplo)value;
             setText(ingredient.getNev());
         }
         return this;

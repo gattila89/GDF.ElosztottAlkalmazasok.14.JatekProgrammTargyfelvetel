@@ -1,32 +1,147 @@
 package jatekprogram;
 
 import Model.Jatekos;
+import Model.NPC;
+import Model.Serializer;
 import Model.Szereplo;
+import Model.Targy;
+import Model.TulSokTargyException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class MainFrame extends javax.swing.JFrame {
 
-    private List<Szereplo> jatekosok;
+    private List<Szereplo> szereplok;
+    private Szereplo selectedSzereplo;
     
     public MainFrame() {
         
         initComponents();
         
-        jatekosok = new ArrayList<Szereplo>();
-        jListJatekosok.setCellRenderer(new JatekosListCellRenderer());
+        szereplok = new ArrayList<Szereplo>();
+        
+        jListSzereplok.setCellRenderer(new JatekosListCellRenderer());
         jListTargyLista.setCellRenderer(new TargyListCellRenderer());
+        
+        AddListenerToSzereploList();
+        UpdateSzereploLista();
     }
     
-    public void UpdateJatekosLista()
+    public void AddListenerToSzereploList()
+    {
+        ListSelectionListener listSelectionListener = (ListSelectionEvent listSelectionEvent) 
+                -> 
+        {
+            JList list = (JList) listSelectionEvent.getSource();
+            selectedSzereplo = (Szereplo)list.getSelectedValue();
+            if(selectedSzereplo != null)
+            {
+                jTextFieldJatekosNev.setText(selectedSzereplo.getNev());
+                jTextFieldJatekosSebesseg.setText(Integer.toString(selectedSzereplo.getSebesseg()));
+                jCheckBoxIsJatekos.setSelected(selectedSzereplo instanceof Jatekos);   
+                UpdateTargyLista(selectedSzereplo);
+                UpdateSzereploLista();
+            }
+        };
+        jListSzereplok.addListSelectionListener(listSelectionListener);
+    }
+    
+    public void AddUjJatekos(String nev, boolean isJatekos)
+    {
+        Szereplo szereplo;
+        
+        if(isJatekos)
+        {
+            szereplo = new Jatekos();
+        }
+        else
+        {
+            szereplo = new NPC();
+        }
+        szereplo.setNev(nev);
+        szereplok.add(szereplo);
+        UpdateSzereploLista();        
+    }
+    
+    public void UpdateSzereploLista()
     {
         DefaultListModel listModel = new DefaultListModel();
-        for (int i = 0; i < jatekosok.size(); i++)
+        for (int i = 0; i < szereplok.size(); i++)
         {
-            listModel.addElement(jatekosok.get(i));
+            listModel.addElement(szereplok.get(i));
         }
-        jListJatekosok.setModel(listModel);
+        jListSzereplok.setModel(listModel);
+    }
+    
+    public void UpdateTargyLista(Szereplo szereplo)
+    {
+        DefaultListModel listModel = new DefaultListModel();
+        for (int i = 0; i < szereplo.getTargyLista().size(); i++)
+        {
+            listModel.addElement(szereplo.getTargyLista().get(i));
+        }
+        jListSzereplok.setModel(listModel);
+    }
+    
+    public void SaveSzereplo(Szereplo szereplo)
+    {
+        try
+        {
+            Serializer.SerializeToFile(szereplo, szereplo.getNev() + ".bin");
+        }catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+    
+    public void LoadSzereplo(Szereplo szereplo)
+    {
+        String filePath = szereplo.getNev() + ".bin";
+        LoadSzereplo(filePath);
+    }
+    
+    public void LoadSzereplo(String filePath)
+    {
+        try
+        {
+            Serializer.DeserializeFromFile(new File(filePath));
+        }catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+    
+    public void TargyFelvesz(Szereplo szereplo)
+    {
+        Targy targy = new Targy();
+            targy.setNev(jTextFieldUjTargyNev.getText());
+            targy.setTomeg((int)jSpinnerUjTargyTomeg.getValue());
+            try {
+                szereplo.TargyFelvesz(targy);
+            } catch (TulSokTargyException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+    }
+    
+    public void RendezTargyakNevSzerint(Szereplo szereplo) {
+        szereplo.RendezTargyListaNevSzerint();
+        UpdateTargyLista(szereplo);
+    }
+    
+    public void RendezTargyakTomegSzerint(Szereplo szereplo) {
+        szereplo.RendezTargyListaTomegSzerint();
+        UpdateTargyLista(szereplo);
+    }
+    
+    public boolean IsExistsSelectedSzereplo()
+    {
+        return selectedSzereplo != null;
     }
 
     /**
@@ -48,7 +163,7 @@ public class MainFrame extends javax.swing.JFrame {
         jRadioButtonIsJatekos = new javax.swing.JRadioButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jListJatekosok = new javax.swing.JList<>();
+        jListSzereplok = new javax.swing.JList<>();
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jTextFieldJatekosNev = new javax.swing.JTextField();
@@ -143,8 +258,8 @@ public class MainFrame extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Játékosok"));
 
-        jListJatekosok.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane1.setViewportView(jListJatekosok);
+        jListSzereplok.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(jListSzereplok);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -180,10 +295,20 @@ public class MainFrame extends javax.swing.JFrame {
         jScrollPane5.setViewportView(jListTargyLista);
 
         jButtonRendezNev.setText("Név szerint");
+        jButtonRendezNev.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRendezNevActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Rendezés");
 
         jButtonRendezToemg.setText("Tömeg szerint");
+        jButtonRendezToemg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRendezToemgActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -225,6 +350,11 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel7.setText("Tömeg");
 
         jButtonAddUjTargyToJatekos.setText("Hozzáad");
+        jButtonAddUjTargyToJatekos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddUjTargyToJatekosActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -235,13 +365,13 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButtonAddUjTargyToJatekos, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextFieldUjTargyNev))
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSpinnerUjTargyTomeg)))
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextFieldUjTargyNev)
+                            .addComponent(jSpinnerUjTargyTomeg))))
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -260,8 +390,18 @@ public class MainFrame extends javax.swing.JFrame {
         );
 
         jButtonMentes.setText("Játékos mentése");
+        jButtonMentes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonMentesActionPerformed(evt);
+            }
+        });
 
         jButtonBetoltes.setText("Játékos mentett betöltése");
+        jButtonBetoltes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBetoltesActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -351,12 +491,64 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonAddUjJatekosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddUjJatekosActionPerformed
-        Jatekos j = new Jatekos();
-        j.setNev(jTextFieldUjJatekosNev.getText());
-        jatekosok.add(j);
-        UpdateJatekosLista();
+        AddUjJatekos(jTextFieldUjJatekosNev.getText(), jRadioButtonIsJatekos.isSelected());
         jTextFieldUjJatekosNev.setText("");
     }//GEN-LAST:event_jButtonAddUjJatekosActionPerformed
+
+    private void jButtonMentesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMentesActionPerformed
+        if(IsExistsSelectedSzereplo())
+        {
+            SaveSzereplo(selectedSzereplo);
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "Nincs kijelölve szereplö!");
+        }
+    }//GEN-LAST:event_jButtonMentesActionPerformed
+
+    private void jButtonBetoltesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBetoltesActionPerformed
+        if(IsExistsSelectedSzereplo())
+        {
+            LoadSzereplo(selectedSzereplo);
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "Nincs kijelölve szereplö!");
+        }
+    }//GEN-LAST:event_jButtonBetoltesActionPerformed
+
+    private void jButtonAddUjTargyToJatekosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddUjTargyToJatekosActionPerformed
+        if(IsExistsSelectedSzereplo())
+        {
+            TargyFelvesz(selectedSzereplo);
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "Nincs kijelölve szereplö!");
+        }
+    }//GEN-LAST:event_jButtonAddUjTargyToJatekosActionPerformed
+
+    private void jButtonRendezNevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRendezNevActionPerformed
+        if(IsExistsSelectedSzereplo())
+        {
+            RendezTargyakNevSzerint(selectedSzereplo);
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "Nincs kijelölve szereplö!");
+        }
+    }//GEN-LAST:event_jButtonRendezNevActionPerformed
+
+    private void jButtonRendezToemgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRendezToemgActionPerformed
+        if(IsExistsSelectedSzereplo())
+        {
+            RendezTargyakTomegSzerint(selectedSzereplo);
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "Nincs kijelölve szereplö!");
+        }
+    }//GEN-LAST:event_jButtonRendezToemgActionPerformed
 
     /**
      * @param args the command line arguments
@@ -412,7 +604,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JList<String> jListJatekosTargyai;
     private javax.swing.JList<String> jListJatekosTargyai1;
     private javax.swing.JList<String> jListJatekosTargyai2;
-    private javax.swing.JList<String> jListJatekosok;
+    private javax.swing.JList<String> jListSzereplok;
     private javax.swing.JList<String> jListTargyLista;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -436,4 +628,5 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldUjJatekosNev;
     private javax.swing.JTextField jTextFieldUjTargyNev;
     // End of variables declaration//GEN-END:variables
+
 }
