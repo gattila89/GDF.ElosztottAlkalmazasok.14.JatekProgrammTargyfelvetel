@@ -56,6 +56,7 @@ public class SerializerTest {
     public void testDeserializeFromFile() throws Exception {
         System.out.println("DeserializeFromFile");
         File file = new File(filepath);
+        Serializer.SerializeToFile(jatekos, filepath);
         Jatekos result = (Jatekos)Serializer.DeserializeFromFile(file);
         
         System.out.println("From File: ");
