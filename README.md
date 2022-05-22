@@ -1,0 +1,1 @@
+# GDF.ElosztottAlkalmazasok.14.JatekProgrammTargyfelvetel
