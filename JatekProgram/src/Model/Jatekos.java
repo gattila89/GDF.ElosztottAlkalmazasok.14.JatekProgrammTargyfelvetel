@@ -1,6 +1,8 @@
 package Model;
 
-public class Jatekos extends Szereplo {
+import java.io.Serializable;
+
+public class Jatekos extends Szereplo implements Serializable {
     
     public Jatekos()
     {

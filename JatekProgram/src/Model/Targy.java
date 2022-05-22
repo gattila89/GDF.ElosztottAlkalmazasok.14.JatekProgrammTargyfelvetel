@@ -1,9 +1,23 @@
 package Model;
 
-public class Targy {
+import java.io.Serializable;
+
+public class Targy implements Serializable {
     private String _nev;
     
     private Integer _tomeg;
+    
+    public Targy()
+    {
+        setNev("");
+        setTomeg(0);
+    }
+    
+    public Targy(String nev, int tomeg)
+    {
+        setNev(nev);
+        setTomeg(tomeg);
+    }
     
     public String getNev()
     {

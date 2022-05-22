@@ -1,5 +1,8 @@
 package Model;
 
-public class NPC extends Szereplo {
+import java.io.Serializable;
+
+public class NPC extends Szereplo implements Serializable {
     
+    public NPC(){}
 }
