@@ -39,14 +39,17 @@ public class MainFrame extends javax.swing.JFrame {
                 -> 
         {
             JList list = (JList) listSelectionEvent.getSource();
-            selectedSzereplo = (Szereplo)list.getSelectedValue();
-            if(selectedSzereplo != null)
-            {
-                jTextFieldJatekosNev.setText(selectedSzereplo.getNev());
-                jTextFieldJatekosSebesseg.setText(Integer.toString(selectedSzereplo.getSebesseg()));
-                jCheckBoxIsJatekos.setSelected(selectedSzereplo instanceof Jatekos);   
-                UpdateTargyLista(selectedSzereplo);
-                UpdateSzereploLista();
+            if(!listSelectionEvent.getValueIsAdjusting()){
+                Object szereploTemp = list.getSelectedValue();
+                if(szereploTemp != null && szereploTemp instanceof Szereplo)
+                {
+                    selectedSzereplo = (Szereplo)szereploTemp;
+                    jTextFieldJatekosNev.setText(selectedSzereplo.getNev());
+                    jTextFieldJatekosSebesseg.setText(Integer.toString(selectedSzereplo.getSebesseg()));
+                    jCheckBoxIsJatekos.setSelected(selectedSzereplo instanceof Jatekos);   
+                    UpdateTargyLista(selectedSzereplo);
+                    UpdateSzereploLista();
+                }
             }
         };
         jListSzereplok.addListSelectionListener(listSelectionListener);
@@ -56,15 +59,22 @@ public class MainFrame extends javax.swing.JFrame {
     {
         Szereplo szereplo;
         
-        if(isJatekos)
+        String filePath = nev + ".bin";
+        szereplo = LoadSzereplo(filePath);
+        
+        if(szereplo == null)
         {
-            szereplo = new Jatekos();
+            if(isJatekos)
+            {
+                szereplo = new Jatekos();
+            }
+            else
+            {
+                szereplo = new NPC();
+            }
+            szereplo.setNev(nev);   
         }
-        else
-        {
-            szereplo = new NPC();
-        }
-        szereplo.setNev(nev);
+        
         szereplok.add(szereplo);
         UpdateSzereploLista();        
     }
@@ -82,11 +92,12 @@ public class MainFrame extends javax.swing.JFrame {
     public void UpdateTargyLista(Szereplo szereplo)
     {
         DefaultListModel listModel = new DefaultListModel();
+        var lista = szereplo.getTargyLista();
         for (int i = 0; i < szereplo.getTargyLista().size(); i++)
         {
-            listModel.addElement(szereplo.getTargyLista().get(i));
+            listModel.addElement(lista.get(i));
         }
-        jListSzereplok.setModel(listModel);
+        jListTargyLista.setModel(listModel);
     }
     
     public void SaveSzereplo(Szereplo szereplo)
@@ -94,26 +105,29 @@ public class MainFrame extends javax.swing.JFrame {
         try
         {
             Serializer.SerializeToFile(szereplo, szereplo.getNev() + ".bin");
+            JOptionPane.showMessageDialog(null, "Sikeres mentes!");
         }catch(Exception e)
         {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
     
-    public void LoadSzereplo(Szereplo szereplo)
+    public Szereplo LoadSzereplo(Szereplo szereplo)
     {
         String filePath = szereplo.getNev() + ".bin";
-        LoadSzereplo(filePath);
+        return LoadSzereplo(filePath);
     }
     
-    public void LoadSzereplo(String filePath)
+    public Szereplo LoadSzereplo(String filePath)
     {
         try
         {
-            Serializer.DeserializeFromFile(new File(filePath));
-        }catch(Exception e)
-        {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            Szereplo sz = (Szereplo)Serializer.DeserializeFromFile(new File(filePath));
+            JOptionPane.showMessageDialog(null, "Sikeres Automatikus betöltes!");
+            return sz;
+        }
+        catch(Exception e){
+            return null;
         }
     }
     
@@ -124,6 +138,8 @@ public class MainFrame extends javax.swing.JFrame {
             targy.setTomeg((int)jSpinnerUjTargyTomeg.getValue());
             try {
                 szereplo.TargyFelvesz(targy);
+                jTextFieldJatekosSebesseg.setText(Integer.toString(szereplo.getSebesseg()));
+                UpdateTargyLista(szereplo);
             } catch (TulSokTargyException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage());
             }

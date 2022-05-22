@@ -15,7 +15,7 @@ public class TargyListCellRenderer extends DefaultListCellRenderer {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         if (value instanceof Targy) {
             Targy ingredient = (Targy)value;
-            setText(ingredient.getNev());
+            setText(ingredient.getNev() + "   " + ingredient.getTomeg() + " kg");
         }
         return this;
     }
