@@ -33,7 +33,7 @@ public class MainFrame extends javax.swing.JFrame {
         UpdateSzereploLista();
     }
     
-    public void AddListenerToSzereploList()
+    private void AddListenerToSzereploList()
     {
         ListSelectionListener listSelectionListener = (ListSelectionEvent listSelectionEvent) 
                 -> 
@@ -55,7 +55,7 @@ public class MainFrame extends javax.swing.JFrame {
         jListSzereplok.addListSelectionListener(listSelectionListener);
     }
     
-    public void AddUjJatekos(String nev, boolean isJatekos)
+    private void AddUjJatekos(String nev, boolean isJatekos)
     {
         Szereplo szereplo;
         
@@ -79,7 +79,7 @@ public class MainFrame extends javax.swing.JFrame {
         UpdateSzereploLista();        
     }
     
-    public void UpdateSzereploLista()
+    private void UpdateSzereploLista()
     {
         DefaultListModel listModel = new DefaultListModel();
         for (int i = 0; i < szereplok.size(); i++)
@@ -89,7 +89,7 @@ public class MainFrame extends javax.swing.JFrame {
         jListSzereplok.setModel(listModel);
     }
     
-    public void UpdateTargyLista(Szereplo szereplo)
+    private void UpdateTargyLista(Szereplo szereplo)
     {
         DefaultListModel listModel = new DefaultListModel();
         var lista = szereplo.getTargyLista();
@@ -100,7 +100,7 @@ public class MainFrame extends javax.swing.JFrame {
         jListTargyLista.setModel(listModel);
     }
     
-    public void SaveSzereplo(Szereplo szereplo)
+    private void SaveSzereplo(Szereplo szereplo)
     {
         try
         {
@@ -112,13 +112,13 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
     
-    public Szereplo LoadSzereplo(Szereplo szereplo)
+    private Szereplo LoadSzereplo(Szereplo szereplo)
     {
         String filePath = szereplo.getNev() + ".bin";
         return LoadSzereplo(filePath);
     }
     
-    public Szereplo LoadSzereplo(String filePath)
+    private Szereplo LoadSzereplo(String filePath)
     {
         try
         {
@@ -131,7 +131,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
     
-    public void TargyFelvesz(Szereplo szereplo)
+    private void TargyFelvesz(Szereplo szereplo)
     {
         Targy targy = new Targy();
             targy.setNev(jTextFieldUjTargyNev.getText());
@@ -145,17 +145,17 @@ public class MainFrame extends javax.swing.JFrame {
             }
     }
     
-    public void RendezTargyakNevSzerint(Szereplo szereplo) {
+    private void RendezTargyakNevSzerint(Szereplo szereplo) {
         szereplo.RendezTargyListaNevSzerint();
         UpdateTargyLista(szereplo);
     }
     
-    public void RendezTargyakTomegSzerint(Szereplo szereplo) {
+    private void RendezTargyakTomegSzerint(Szereplo szereplo) {
         szereplo.RendezTargyListaTomegSzerint();
         UpdateTargyLista(szereplo);
     }
     
-    public boolean IsExistsSelectedSzereplo()
+    private boolean IsExistsSelectedSzereplo()
     {
         return selectedSzereplo != null;
     }
